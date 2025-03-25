@@ -1,0 +1,65 @@
+# Xcode
+build/
+DerivedData/
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+
+# SwiftPM
+.build/
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Archives
+*.xcarchive
+
+# iOS
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace
+
+# IDE
+.idea/
+*.sw?
+*.orig
+
+# SwiftLint / logs
+.swiftlint.yml
+*.log
+
+# User-specific
+*.env
+*.local
+*.DS_Store
+
+# Symbolicate crash reports
+*.crash
+*.replay
+
+# Firebase / GoogleService
+GoogleService-Info.plist
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots
+fastlane/test_output
+
+# Preview Devices
+.preview-thumbnails
+
+# AppCenter
+appcenter-pre-build.sh
