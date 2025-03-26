@@ -70,6 +70,18 @@ struct FirebaseTests {
             print(failure)
         }
     }
-    
-    
+
+    // 전체 유저 목록을 가져오는 테스트
+    @Test func getAllUsersTest() async {
+        let result = await FirebaseService.shared.getAllUsers()
+        switch result {
+        case .success(let users):
+            print("\n---- 전체 유저 목록 ----")
+            for user in users {
+                print("닉네임: \(user.nickName), 비밀번호: \(user.password)")
+            }
+        case .failure(let error):
+            print("유저 목록 가져오기 실패: \(error.description)")
+        }
+    }
 }
