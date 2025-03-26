@@ -37,13 +37,19 @@ struct InputNicknameView: View {
                     )
                     .multilineTextAlignment(.center)
                     .onChange(of: self.viewModel.nickname) { _ in
+                        // 첫 글자를 소문자로 변환
+                        if !self.viewModel.nickname.isEmpty {
+                            let firstLetter = self.viewModel.nickname.prefix(1).lowercased()
+                            let restOfString = self.viewModel.nickname.dropFirst()
+                            self.viewModel.nickname = firstLetter + restOfString
+                        }
                         searchUsers()
                     }
                 
                 if !self.viewModel.filteredUsers.isEmpty && self.isNicknameFocused {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 0) {
-                            ForEach(self.viewModel.allUsers, id: \.self) { user in
+                            ForEach(self.viewModel.allUsersList, id: \.self) { user in
                                 if user.nickname.contains(self.viewModel.nickname) {
                                     searchedUser(userNickName: user.nickname)
                                         .onTapGesture {
@@ -62,7 +68,7 @@ struct InputNicknameView: View {
                         )
                         .shadow(color: .black.opacity(0.25), radius: 1.5, x: 0, y: 0)
                     }
-                    .frame(width: UIScreen.main.bounds.width - 80, height: min(180, CGFloat(30 * self.viewModel.allUsers.filter{ $0.nickname.contains(self.viewModel.nickname)}.count)))
+                    .frame(width: UIScreen.main.bounds.width - 80, height: min(180, CGFloat(30 * self.viewModel.allUsersList.filter{ $0.nickname.contains(self.viewModel.nickname)}.count)))
                     .clipShape(
                         RoundedRectangle(cornerRadius: 10)
                     )
@@ -127,7 +133,7 @@ struct InputNicknameView: View {
             }
         } else {
             withAnimation {
-                self.viewModel.filteredUsers = self.viewModel.allUsers.filter { $0.nickname.lowercased().contains(self.viewModel.nickname.lowercased()) }
+                self.viewModel.filteredUsers = self.viewModel.allUsersList.filter { $0.nickname.lowercased().contains(self.viewModel.nickname.lowercased()) }
             }
         }
     }

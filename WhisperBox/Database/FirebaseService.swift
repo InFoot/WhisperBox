@@ -115,7 +115,7 @@ class FirebaseService {
     }
 }
 
-struct GetUserResModel {
+struct GetUserResModel: Hashable {
     var nickname: String
     var password: String
 }
