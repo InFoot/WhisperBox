@@ -22,6 +22,7 @@ class InputPasswordViewModel: ObservableObject {
                 case .success:
                     self.isLoginSuccessful = true
                     self.shouldNavigate = true
+                    LocalData.userNickname = LocalData.loginNickname
                 case .failure(let error):
                     self.isLoginSuccessful = false
                     print("Error fetching users: \(error.description)") // 에러 메시지 출력

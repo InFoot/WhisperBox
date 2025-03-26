@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyPageView: View {
     
-    private var userName : String = "Go"
+    private var userName : String = LocalData.userNickname
     //To-do : UserName 저장하기
     
     var receivedMessageList : [ReceivedMessage]
