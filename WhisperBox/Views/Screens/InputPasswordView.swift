@@ -50,7 +50,7 @@ struct InputPasswordView: View {
                 Spacer()
                 
                 // 3. 다음으로 버튼
-                NavigationLink(destination: MyPageView(), isActive: self.$viewModel.shouldNavigate){
+                NavigationLink(destination: LoginSuccessView(), isActive: self.$viewModel.shouldNavigate){
                     Button{
                         self.viewModel.login()
                     } label: {
