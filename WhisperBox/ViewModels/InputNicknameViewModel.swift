@@ -12,6 +12,7 @@ class InputNicknameViewModel: ObservableObject {
     @Published var nickname: String = ""
     @Published var filteredUsers: [User] = []
     @Published var isReceiverSelected = false
+    @Published var shouldNavigate = false
     
     //가상데이터
     //To-do : DB에서 사용자 목록 불러오기 구현 필요

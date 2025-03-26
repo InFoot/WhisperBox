@@ -9,8 +9,8 @@ import SwiftUI
 import Combine
 
 struct InputNicknameView: View {
-    @ObservedObject var viewModel: InputNicknameViewModel = InputNicknameViewModel()
     @FocusState private var isNicknameFocused: Bool
+    @ObservedObject var viewModel: InputNicknameViewModel = InputNicknameViewModel()
     
     var body: some View {
         NavigationStack {
@@ -72,20 +72,25 @@ struct InputNicknameView: View {
                 Spacer()
                 
                 //3. 다음으로 버튼
-                Button{
-                    //To-do : 동작 구현하기
-                } label: {
-                    Text("다음으로")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(self.viewModel.isReceiverSelected ? .white : .gray)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(self.viewModel.isReceiverSelected ? .blue : Color.gray.opacity(0.1))
-                        .clipShape(Capsule())
-                    
+                NavigationLink(destination: WelcomeUserView(), isActive: self.$viewModel.shouldNavigate){
+                    Button{
+                        if self.viewModel.isReceiverSelected {
+                            LocalData.loginNickname = self.viewModel.nickname
+                            self.viewModel.shouldNavigate = true
+                        }
+                    } label: {
+                        Text("다음으로")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(self.viewModel.isReceiverSelected ? .white : .gray)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(self.viewModel.isReceiverSelected ? .black : Color.gray.opacity(0.1))
+                            .clipShape(Capsule())
+                        
+                    }
+                    .padding(.bottom, isNicknameFocused ? 10 : 20)
+                    .disabled(!self.viewModel.isReceiverSelected)
                 }
-                .padding(.bottom, isNicknameFocused ? 10 : 20)
-                .disabled(!self.viewModel.isReceiverSelected)
             }
             .padding()
             .onTapGesture {
