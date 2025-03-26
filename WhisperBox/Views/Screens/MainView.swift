@@ -10,6 +10,7 @@ import Combine
 
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel = MainViewModel()
+    @EnvironmentObject var coordinator: Coordinator
     
     var body: some View {
         ScrollView {
@@ -33,8 +34,8 @@ struct MainView: View {
     }
     
     var sendLetter: some View {
-        NavigationLink(destination: {
-            WriteMessageView()
+        Button(action: {
+            coordinator.push(.writeMessage)
         }) {
             ZStack(alignment: .topTrailing) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -59,12 +60,6 @@ struct MainView: View {
             }
         }
         .buttonStyle(.plain)
-//        Button(action: {
-//            
-//        }) {
-//            
-//        }
-//        .buttonStyle(.plain)
     }
     
     var receivedLetter: some View {
@@ -110,6 +105,11 @@ struct MainView: View {
                         .opacity(self.viewModel.todaySendCount < 2 ? 1 : 0)
                 )
                 .padding(.bottom, 10)
+                .onTapGesture {
+                    if self.viewModel.todaySendCount < 2 {
+                        self.coordinator.push(.lockedLetter)
+                    }
+                }
             }
         }
     }
