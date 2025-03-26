@@ -10,7 +10,23 @@ import SwiftUI
 
 class InputPasswordViewModel: ObservableObject {
     @Published var password: String = ""
-//    @Published var filteredUsers: [User] = []
-    @Published var isReceiverSelected = false
+    @Published var isPasswordFilled = false
     @Published var shouldNavigate = false
+    @Published var isLoginSuccessful = false
+    
+    func login() {
+        Task {
+            let result = await FirebaseService.shared.login(nickName: LocalData.loginNickname, password: self.password)
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.isLoginSuccessful = true
+                    self.shouldNavigate = true
+                case .failure(let error):
+                    self.isLoginSuccessful = false
+                    print("Error fetching users: \(error.description)") // 에러 메시지 출력
+                }
+            }
+        }
+    }
 }
