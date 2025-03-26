@@ -91,6 +91,28 @@ class FirebaseService {
         }
         return .success(letterList)
     }
+    
+    // MARK: 전체 유저 목록 가져오기
+    func getAllUsers() async -> Result<[GetUserResModel], WhisperBoxError> {
+        do {
+            let dataSnapshot = try await database.child("users").getData()
+            
+            var userList: [GetUserResModel] = []
+
+            for child in dataSnapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let childValue = childSnapshot.value as? [String: Any],
+                   let nickName = childValue["nickName"] as? String,
+                   let password = childValue["password"] as? String {
+                    userList.append(GetUserResModel(nickName: nickName, password: password))
+                }
+            }
+            
+            return .success(userList)
+        } catch {
+            return .failure(.firebaseError)
+        }
+    }
 }
 
 struct GetUserResModel {
