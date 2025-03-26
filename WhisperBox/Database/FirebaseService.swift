@@ -98,7 +98,7 @@ struct GetUserResModel {
     var password: String
 }
 
-struct LetterInfo {
+struct LetterInfo: Hashable {
     var sender: String?
     var letterDate: String?
     var isAnonymous: Bool?

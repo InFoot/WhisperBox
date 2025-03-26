@@ -16,6 +16,9 @@ struct WriteMessageView: View {
             viewModel.selectedUser = selected
         }
     }
+    
+    // test, 제거 필요
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView {
             ScrollView {
@@ -110,6 +113,10 @@ struct WriteMessageView: View {
 
                     // 7. 전송 버튼
                     Button("마음 전하기") {
+                        // MARK: 먼저 네비게이션 스택에서 pop
+                        dismiss()
+                        // MARK: 하루 전송 횟수 1 증가
+                        LocalData.sendCount += 1
                         Task {
                             await viewModel.sendMessage(from: users)
                         }
