@@ -13,7 +13,8 @@ struct WhisperBoxApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                StartView()
+                // StartView()
+                MainView(viewModel: MainViewModel())
             }
             .toolbar(.hidden, for: .navigationBar) // 👈 전역처럼 적용!
         }
