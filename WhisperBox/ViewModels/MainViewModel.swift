@@ -19,12 +19,12 @@ class MainViewModel: ObservableObject {
                 self.todaySendCount = LocalData.sendCount
             }
             
-            let result = await FirebaseService.shared.getUserLetters(userNickname: "ted", date: Date())
+            let result = await FirebaseService.shared.getUserLetters(userNickname: LocalData.userNickname, date: Date())
             switch result {
             case .success(let success):
                 DispatchQueue.main.async {
                     withAnimation {
-                        self.todayLetterList = success
+                       // self.todayLetterList = success
                     }
                 }
                 

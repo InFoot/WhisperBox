@@ -22,13 +22,21 @@ struct WhisperBoxApp: App {
                         switch value {
                         case .lockedLetter:
                             LockedLetterView()
+                                .environmentObject(coordinator)
                                 .toolbar(.hidden, for: .navigationBar)
                         case .main:
                             MainView()
+                                .environmentObject(coordinator)
                                 .toolbar(.hidden, for: .navigationBar)
-                        case .writeMessage:
-                            WriteMessageView()
-                                .toolbar(.hidden, for: .navigationBar)
+                        case .writeMessage(let user):
+                            WriteMessageView(user)
+                                .environmentObject(coordinator)
+                                //.toolbar(.hidden, for: .navigationBar)
+                        case .searchReceiver:
+                            UserListView(onUserSelected: { user in
+                                coordinator.push(.writeMessage(user))
+                            })
+                            .environmentObject(coordinator)
                         }
                     }
             }

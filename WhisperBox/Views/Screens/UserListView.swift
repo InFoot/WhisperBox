@@ -21,7 +21,6 @@ struct UserListView: View {
                 List(viewModel.filteredUsers) { user in
                     Button {
                         onUserSelected(user) // 선택한 유저를 WriteMessageView로 전달
-                        dismiss()            // 👈 sheet 닫기!
                     } label: {
                         VStack(alignment: .leading) {
                             Text(user.nickname)
@@ -33,6 +32,7 @@ struct UserListView: View {
                             }
                         }
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .navigationTitle("사람 선택하기")
