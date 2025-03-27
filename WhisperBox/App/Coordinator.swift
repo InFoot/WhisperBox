@@ -9,7 +9,15 @@ import Combine
 import SwiftUI
 
 final class Coordinator: ObservableObject {
-    @Published var route: [ViewType] = []
+    @Published var route: [ViewType] = [.main]
+    
+    init() {
+        if LocalData.userNickname != "" {
+            push(.main)
+        } else {
+            push(.inputNickname)
+        }
+    }
     
     func push(_ viewPath: ViewType) {
         route.append(viewPath)

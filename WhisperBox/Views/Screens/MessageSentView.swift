@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MessageSentView: View {
+    @EnvironmentObject var coordinator: Coordinator
     @Environment(\.dismiss) var dismiss
 
     var nickname: String?
@@ -30,7 +31,8 @@ struct MessageSentView: View {
             }
 
             Button("처음으로") {
-                dismiss() // 현재 화면 닫고 이전으로 돌아감
+                coordinator.popToRoot()
+                coordinator.push(.main)
             }
             .padding()
             .frame(maxWidth: .infinity)

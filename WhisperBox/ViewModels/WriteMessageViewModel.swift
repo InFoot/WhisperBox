@@ -10,7 +10,7 @@ import Combine
 import Foundation
 import Combine
 
-final class WriteMessageViewModel: ObservableObject {
+class WriteMessageViewModel: ObservableObject {
     // MARK: - Input
     @Published var message: String = ""
     @Published var isAnonymous: Bool = false {
@@ -24,12 +24,13 @@ final class WriteMessageViewModel: ObservableObject {
         }
     }
 
-    @Published var selectedUser: User? = nil
+    @Published var selectedUser: User?
     @Published var selectedTemplateIndex: Int = 0
 
     // MARK: - Output
     @Published var anonymousNickname: String? = nil
     @Published var didSendMessage: Bool = false
+    
 
     // MARK: - Validation
     var isFormValid: Bool {
@@ -39,6 +40,11 @@ final class WriteMessageViewModel: ObservableObject {
             return selectedUser != nil &&
                 message.trimmingCharacters(in: .whitespacesAndNewlines).count >= 10
         }
+    }
+    
+    // MARK: - Initialize
+    init(user: User?) {
+        self.selectedUser = user
     }
 
     // MARK: - Message Sending

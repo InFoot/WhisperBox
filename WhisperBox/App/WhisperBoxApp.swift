@@ -16,19 +16,37 @@ struct WhisperBoxApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.route) {
-                MainView()
+                VStack {
+                    
+                }
                     .environmentObject(coordinator)
                     .navigationDestination(for: ViewType.self) { value in
                         switch value {
+                        case .inputNickname:
+                            InputNicknameView()
+                                .environmentObject(coordinator)
+                                .toolbar(.hidden, for: .navigationBar)
+                        case .welcomeUser:
+                            WelcomeUserView()
+                                .environmentObject(coordinator)
+                                .toolbar(.hidden, for: .navigationBar)
                         case .lockedLetter:
                             LockedLetterView()
+                                .environmentObject(coordinator)
                                 .toolbar(.hidden, for: .navigationBar)
                         case .main:
                             MainView()
+                                .environmentObject(coordinator)
                                 .toolbar(.hidden, for: .navigationBar)
-                        case .writeMessage:
-                            WriteMessageView()
-                                .toolbar(.hidden, for: .navigationBar)
+                        case .writeMessage(let user):
+                            WriteMessageView(user)
+                                .environmentObject(coordinator)
+                                //.toolbar(.hidden, for: .navigationBar)
+                        case .searchReceiver:
+                            UserListView(onUserSelected: { user in
+                                coordinator.push(.writeMessage(user))
+                            })
+                            .environmentObject(coordinator)
                         }
                     }
             }

@@ -6,7 +6,10 @@
 //
 
 enum ViewType: Hashable {
+    case inputNickname
+    case welcomeUser
     case main
     case lockedLetter
-    case writeMessage
+    case writeMessage(User?)
+    case searchReceiver
 }
