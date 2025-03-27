@@ -57,13 +57,13 @@ class FirebaseService {
     }
     
     // MARK: 편지 정보 저장
-    func sendLetter(sender: String, recievers: [String], content: String, isAnonymous: Bool) async throws -> Result<Bool, WhisperBoxError> {
+    func sendLetter(sender: String, recievers: [String?], content: String, isAnonymous: Bool) async throws -> Result<Bool, WhisperBoxError> {
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
         let keyDateString = "\(dateComponents.year!)_\(dateComponents.month!)_\(dateComponents.day!)"
         let valueDateString = "\(dateComponents.year!).\(dateComponents.month!).\(dateComponents.day!) \(dateComponents.hour!):\(dateComponents.minute!)"
         do {
             for reciever in recievers {
-                try await database.child("letters").child(reciever).child(keyDateString).child(UUID().uuidString).setValue(["content": content, "sender": sender, "isAnonymous": isAnonymous, "letterDate": valueDateString])
+                try await database.child("letters").child(reciever!).child(keyDateString).child(UUID().uuidString).setValue(["content": content, "sender": sender, "isAnonymous": isAnonymous, "letterDate": valueDateString])
             }
             return .success(true)
         } catch {
