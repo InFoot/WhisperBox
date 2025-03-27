@@ -9,25 +9,23 @@ import SwiftUI
 
 struct WelcomeUserView: View {
     @State private var navigateToNextView = false
+    @EnvironmentObject var coordinator: Coordinator
     var loginNickname :String = LocalData.loginNickname
     
     var body: some View{
-        NavigationStack{
-            VStack{
-                Text("\(loginNickname), 반가워요!")
-                    .font(.title)
-                    .bold()
-            }
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    navigateToNextView = true
-                }
-            }
-            .navigationDestination(isPresented: $navigateToNextView) {
-                InputPasswordView()
+        VStack{
+            Text("\(loginNickname), 반가워요!")
+                .font(.title)
+                .bold()
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                coordinator.push(.main)
             }
         }
-        .navigationBarBackButtonHidden(true)
+        .navigationDestination(isPresented: $navigateToNextView) {
+            InputPasswordView()
+        }
     }
 }
 
