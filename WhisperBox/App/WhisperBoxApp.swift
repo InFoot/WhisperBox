@@ -16,10 +16,20 @@ struct WhisperBoxApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.route) {
-                MainView()
+                VStack {
+                    
+                }
                     .environmentObject(coordinator)
                     .navigationDestination(for: ViewType.self) { value in
                         switch value {
+                        case .inputNickname:
+                            InputNicknameView()
+                                .environmentObject(coordinator)
+                                .toolbar(.hidden, for: .navigationBar)
+                        case .welcomeUser:
+                            WelcomeUserView()
+                                .environmentObject(coordinator)
+                                .toolbar(.hidden, for: .navigationBar)
                         case .lockedLetter:
                             LockedLetterView()
                                 .environmentObject(coordinator)
