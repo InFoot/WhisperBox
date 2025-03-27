@@ -78,7 +78,7 @@ class FirebaseService {
         // MARK: date에 해당하는 날짜에 유저에게 도착한 편지 리스트
         var letterList: [LetterInfo] = []
         
-        let dataSnapshot = await database.child("letters").child("ted").child(keyDateString).observeSingleEventAndPreviousSiblingKey(of: .value).0
+        let dataSnapshot = await database.child("letters").child(LocalData.userNickname).child(keyDateString).observeSingleEventAndPreviousSiblingKey(of: .value).0
         for child in dataSnapshot.children {
             if let childSnapshot = child as? DataSnapshot, let childValue = childSnapshot.value as? [String: Any] {
                 var letter = LetterInfo()

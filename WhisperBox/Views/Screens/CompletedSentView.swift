@@ -33,6 +33,7 @@ struct CompletedSentView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 withAnimation(.easeInOut(duration: 0.5)) {
                     coordinator.popToRoot()
+                    coordinator.push(.main)
                 }
             }
         }

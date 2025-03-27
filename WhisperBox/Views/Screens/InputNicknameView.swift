@@ -37,12 +37,7 @@ struct InputNicknameView: View {
                 )
                 .multilineTextAlignment(.center)
                 .onChange(of: self.viewModel.nickname) { _ in
-                    // 첫 글자를 소문자로 변환
-                    if !self.viewModel.nickname.isEmpty {
-                        let firstLetter = self.viewModel.nickname.prefix(1).lowercased()
-                        let restOfString = self.viewModel.nickname.dropFirst()
-                        self.viewModel.nickname = firstLetter + restOfString
-                    }
+                    
                     searchUsers()
                 }
             
@@ -79,6 +74,7 @@ struct InputNicknameView: View {
             
             //3. 다음으로 버튼
             Button{
+                LocalData.userNickname = self.viewModel.nickname
                 if self.viewModel.isReceiverSelected {
                     LocalData.loginNickname = self.viewModel.nickname
                     self.viewModel.shouldNavigate = true
