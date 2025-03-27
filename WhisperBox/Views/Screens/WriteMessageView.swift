@@ -4,46 +4,42 @@
 //
 //  Created by kirby on 3/25/25.
 //
-
 import SwiftUI
 
 struct WriteMessageView: View {
     @ObservedObject private var viewModel: WriteMessageViewModel
     @EnvironmentObject var coordinator: Coordinator
     @State private var isSelectingUser = false
-    
-    init(_ user: User? = nil) {
+
+    init(_ user: GetUserResModel? = nil) {
         self.viewModel = WriteMessageViewModel(user: user)
     }
+
     @ViewBuilder
     private var userSelectorSheet: some View {
-        
         UserListView { selected in
             viewModel.selectedUser = selected
             self.isSelectingUser = false
         }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            
-            // 1. 제목
             Text("따뜻한 말을 건네보세요")
                 .font(.custom("Pretendard", size: 23.09).weight(.bold))
                 .foregroundColor(Color(hex: "#262626"))
-            
-            // 2. 유저 선택
+
             Text("받는 사람 선택하기")
                 .font(.custom("Pretendard", size: 16.58).weight(.semibold))
                 .foregroundColor(Color(hex: "#212124"))
-            
+
             Button {
                 if !viewModel.isAnonymous {
                     isSelectingUser = true
                 }
             } label: {
                 HStack {
-                    let displayName = viewModel.selectedUser?.nickname ?? (viewModel.isAnonymous ? (viewModel.anonymousNickname ?? "익명") : "받는 사람을 선택해주세요")
+                    let displayName = viewModel.selectedUser?.nickName ?? (viewModel.isAnonymous ? (viewModel.anonymousNickname ?? "익명") : "받는 사람을 선택해주세요")
                     Text(displayName)
                         .foregroundColor(Color(hex: "#4D5159"))
                         .font(.custom("Pretendard", size: 14.63))
@@ -60,8 +56,7 @@ struct WriteMessageView: View {
             .sheet(isPresented: $isSelectingUser) {
                 userSelectorSheet
             }
-            
-            // 3. 익명 스위치 및 메시지 입력
+
             HStack {
                 Text("쪽지 작성하기")
                     .font(.custom("Pretendard", size: 16.58).weight(.semibold))
@@ -79,9 +74,8 @@ struct WriteMessageView: View {
                         }
                     }
             }
-            
+
             ZStack(alignment: .topLeading) {
-               
                 TextEditor(text: $viewModel.message)
                     .frame(height: 148.2)
                     .padding(.horizontal, 8)
@@ -96,8 +90,7 @@ struct WriteMessageView: View {
                 RoundedRectangle(cornerRadius: 5.85)
                     .stroke(Color(hex: "#D1D3D8"), lineWidth: 0.98)
             )
-            
-            // 5. 템플릿 선택
+
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(templates.indices, id: \.self) { index in
@@ -119,8 +112,9 @@ struct WriteMessageView: View {
                     }
                 }
             }
+
             Spacer()
-            // 6. 안내 텍스트
+
             Text("익명에게 보내기는 랜덤 상대에게 쪽지를 보내는 기능입니다.\n추천 주제에 대한 쪽지를 보내주세요! \n익명의 상대로부터 비밀 답장을 받을 수 있어요.")
                 .font(.custom("Pretendard", size: 13))
                 .foregroundColor(Color(hex: "#6F6F6F"))
@@ -128,12 +122,13 @@ struct WriteMessageView: View {
                 .lineSpacing(5)
                 .frame(maxWidth: .infinity)
                 .frame(maxWidth: .infinity, alignment: .center)
+
             Spacer()
-            // 7. 전송 버튼
+
             Button(action: {
                 LocalData.sendCount += 1
                 Task {
-                    await viewModel.sendMessage(from: users)
+                    await viewModel.sendMessage(from: viewModel.allUsers)
                 }
             }) {
                 Text("다음으로")
@@ -146,15 +141,7 @@ struct WriteMessageView: View {
             }
             .disabled(!viewModel.isFormValid)
             .padding(.horizontal, 20)
-            
-            NavigationLink(
-                destination: CompletedSentView(nickname: viewModel.selectedUser?.nickname).environmentObject(coordinator),
-                isActive: $viewModel.didSendMessage,
-                label: { EmptyView() }
-            )
-            .hidden()
         }
         .padding()
-        
     }
 }

@@ -1,5 +1,5 @@
 //
-//  InputNicknameView.swift
+//  InputnickNameView.swift
 //  WhisperBox
 //
 //  Created by 제하맥 on 3/26/25.
@@ -8,8 +8,8 @@
 import SwiftUI
 import Combine
 
-struct InputNicknameView: View {
-    @FocusState private var isNicknameFocused: Bool
+struct InputnickNameView: View {
+    @FocusState private var isnickNameFocused: Bool
     @ObservedObject var viewModel: InputNicknameViewModel = InputNicknameViewModel()
     
     var body: some View {
@@ -26,7 +26,7 @@ struct InputNicknameView: View {
                 
                 //2. 닉네임 검색창
                 TextEditor(text: self.$viewModel.nickname)
-                    .focused($isNicknameFocused)
+                    .focused($isnickNameFocused)
                     .frame(height: 50)
                     .padding(.horizontal, 5)
                     .overlay(
@@ -46,18 +46,18 @@ struct InputNicknameView: View {
                         searchUsers()
                     }
                 
-                if !self.viewModel.filteredUsers.isEmpty && self.isNicknameFocused {
+                if !self.viewModel.filteredUsers.isEmpty && self.isnickNameFocused {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(self.viewModel.allUsersList, id: \.self) { user in
-                                if user.nickname.contains(self.viewModel.nickname) {
-                                    searchedUser(userNickName: user.nickname)
+                                if user.nickName.contains(self.viewModel.nickname) {
+                                    searchedUser(usernickName: user.nickName)
                                         .onTapGesture {
                                             withAnimation {
-                                                self.viewModel.nickname = user.nickname
+                                                self.viewModel.nickname = user.nickName
                                                 self.viewModel.isReceiverSelected = true
                                             }
-                                            isNicknameFocused = false
+                                            isnickNameFocused = false
                                         }
                                 }
                             }
@@ -68,7 +68,7 @@ struct InputNicknameView: View {
                         )
                         .shadow(color: .black.opacity(0.25), radius: 1.5, x: 0, y: 0)
                     }
-                    .frame(width: UIScreen.main.bounds.width - 80, height: min(180, CGFloat(30 * self.viewModel.allUsersList.filter{ $0.nickname.contains(self.viewModel.nickname)}.count)))
+                    .frame(width: UIScreen.main.bounds.width - 80, height: min(180, CGFloat(30 * self.viewModel.allUsersList.filter{ $0.nickName.contains(self.viewModel.nickname)}.count)))
                     .clipShape(
                         RoundedRectangle(cornerRadius: 10)
                     )
@@ -94,29 +94,29 @@ struct InputNicknameView: View {
                             .clipShape(Capsule())
                         
                     }
-                    .padding(.bottom, isNicknameFocused ? 10 : 20)
+                    .padding(.bottom, isnickNameFocused ? 10 : 20)
                     .disabled(!self.viewModel.isReceiverSelected)
                 }
             }
             .padding()
             .onTapGesture {
                 withAnimation {
-                    isNicknameFocused = false
+                    isnickNameFocused = false
                 }
             }
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 withAnimation {
-                    isNicknameFocused = true
+                    isnickNameFocused = true
                 }
             }
         }
     }
     
-    private func searchedUser(userNickName: String) -> some View {
+    private func searchedUser(usernickName: String) -> some View {
         HStack(spacing: 0) {
-            Text(userNickName).font(.system(size: 24, weight: .bold)).foregroundStyle(.black)
+            Text(usernickName).font(.system(size: 24, weight: .bold)).foregroundStyle(.black)
                 .padding(.trailing, 5)
             Spacer()
         }
@@ -133,12 +133,12 @@ struct InputNicknameView: View {
             }
         } else {
             withAnimation {
-                self.viewModel.filteredUsers = self.viewModel.allUsersList.filter { $0.nickname.lowercased().contains(self.viewModel.nickname.lowercased()) }
+                self.viewModel.filteredUsers = self.viewModel.allUsersList.filter { $0.nickName.lowercased().contains(self.viewModel.nickname.lowercased()) }
             }
         }
     }
 }
 
 #Preview {
-    InputNicknameView()
+    InputnickNameView()
 }

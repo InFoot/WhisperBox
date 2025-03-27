@@ -4,29 +4,37 @@
 //
 //  Created by kirby on 3/25/25.
 //
-
 import Foundation
 import Combine
 
 final class UserListViewModel: ObservableObject {
-    // 입력 상태
     @Published var searchText: String = ""
-
-    // 전체 유저 목록 (고정)
-    private let allUsers: [User]
-
-    // 필터링된 결과 → View에서 바인딩됨
-    @Published var filteredUsers: [User] = []
+    @Published var filteredUsers: [GetUserResModel] = []
+    private(set) var allUsers: [GetUserResModel] = []
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(users: [User]) {
-        self.allUsers = users
+    init() {
+        fetchUsers()
         setupBindings()
     }
 
+    private func fetchUsers() {
+        Task {
+            let result = await FirebaseService.shared.getAllUsers()
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let users):
+                    self.allUsers = users
+                    self.filteredUsers = users
+                case .failure(let error):
+                    print("Error fetching users: \(error.description)")
+                }
+            }
+        }
+    }
+
     private func setupBindings() {
-        // 검색어가 바뀔 때마다 필터링 결과를 업데이트
         $searchText
             .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
             .removeDuplicates()
@@ -36,7 +44,7 @@ final class UserListViewModel: ObservableObject {
                     self.filteredUsers = self.allUsers
                 } else {
                     self.filteredUsers = self.allUsers.filter {
-                        $0.nickname.lowercased().contains(query.lowercased())
+                        $0.nickName.lowercased().contains(query.lowercased())
                     }
                 }
             }

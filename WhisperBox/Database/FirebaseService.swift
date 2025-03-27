@@ -33,7 +33,8 @@ class FirebaseService {
                 // TODO: 에러 분기
                 return .failure(.firebaseError)
             }
-            let getUserResModel = GetUserResModel(nickname: resultJson["nickName"] as? String ?? "", password: resultJson["password"] as? String ?? "")
+            let getUserResModel = GetUserResModel(nickName: resultJson["nickName"] as? String ?? "",
+                                                  password: resultJson["password"] as? String ?? "")
             return .success(getUserResModel)
         } catch {
             // TODO: 에러 분기
@@ -104,7 +105,7 @@ class FirebaseService {
                    let childValue = childSnapshot.value as? [String: Any],
                    let nickName = childValue["nickName"] as? String,
                    let password = childValue["password"] as? String {
-                    userList.append(GetUserResModel(nickname: nickName, password: password))
+                    userList.append(GetUserResModel(nickName: nickName, password: password))
                 }
             }
             
@@ -115,10 +116,13 @@ class FirebaseService {
     }
 }
 
-struct GetUserResModel: Hashable {
-    var nickname: String
-    var password: String
+struct GetUserResModel:  Identifiable, Hashable, Equatable {
+    var id: String { nickName }
+    var nickName: String
+    var password: String = ""
 }
+
+
 
 struct LetterInfo: Hashable {
     var sender: String?

@@ -11,3 +11,4 @@ struct Template : Identifiable {
     let label: String
     let contents: String
 }
+

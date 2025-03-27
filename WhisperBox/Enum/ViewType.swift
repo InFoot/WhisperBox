@@ -8,6 +8,7 @@
 enum ViewType: Hashable {
     case main
     case lockedLetter
-    case writeMessage(User?)
+    case writeMessage(GetUserResModel?)
     case searchReceiver
+    
 }

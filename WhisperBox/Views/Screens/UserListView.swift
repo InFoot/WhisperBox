@@ -4,13 +4,13 @@
 //
 //  Created by kirby on 3/25/25.
 //
-
 import SwiftUI
 
 struct UserListView: View {
-    @StateObject private var viewModel = UserListViewModel(users: users) 
+    @StateObject private var viewModel = UserListViewModel()
     @Environment(\.dismiss) private var dismiss
-    let onUserSelected: (User) -> Void
+    let onUserSelected: (GetUserResModel) -> Void
+
     var body: some View {
         NavigationView {
             VStack {
@@ -18,15 +18,16 @@ struct UserListView: View {
                     .padding()
                     .textFieldStyle(.roundedBorder)
 
-                List(viewModel.filteredUsers) { user in
+                List(viewModel.filteredUsers, id: \.nickName) { user in
                     Button {
                         onUserSelected(user) // 선택한 유저를 WriteMessageView로 전달
+                        dismiss()
                     } label: {
                         VStack(alignment: .leading) {
-                            Text(user.nickname)
+                            Text(user.nickName)
                                 .font(.headline)
-                            if let name = user.name {
-                                Text(name)
+                            if !user.password.isEmpty {
+                                Text(user.password)
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
@@ -39,3 +40,4 @@ struct UserListView: View {
         }
     }
 }
+

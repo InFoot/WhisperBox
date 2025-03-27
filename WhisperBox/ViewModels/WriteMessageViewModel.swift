@@ -4,13 +4,10 @@
 //
 //  Created by kirby on 3/25/25.
 //
-
-import Foundation
-import Combine
 import Foundation
 import Combine
 
-class WriteMessageViewModel: ObservableObject {
+final class WriteMessageViewModel: ObservableObject {
     // MARK: - Input
     @Published var message: String = ""
     @Published var isAnonymous: Bool = false {
@@ -23,14 +20,18 @@ class WriteMessageViewModel: ObservableObject {
             }
         }
     }
-
-    @Published var selectedUser: User?
+    @Published var selectedUser: GetUserResModel? = nil
     @Published var selectedTemplateIndex: Int = 0
 
     // MARK: - Output
     @Published var anonymousNickname: String? = nil
     @Published var didSendMessage: Bool = false
-    
+    @Published var allUsers: [GetUserResModel] = []
+
+    init(user: GetUserResModel? = nil) {
+        self.selectedUser = user
+        fetchAllUsers()
+    }
 
     // MARK: - Validation
     var isFormValid: Bool {
@@ -41,25 +42,51 @@ class WriteMessageViewModel: ObservableObject {
                 message.trimmingCharacters(in: .whitespacesAndNewlines).count >= 10
         }
     }
-    
-    // MARK: - Initialize
-    init(user: User?) {
-        self.selectedUser = user
-    }
 
-    // MARK: - Message Sending
-    func sendMessage(from allUsers: [User]) async {
+    // MARK: - Firebase 호출
+    func sendMessage(from allUsers: [GetUserResModel]) async {
         guard isFormValid else { return }
 
         do {
             if isAnonymous {
-                try await MessageService.saveToRandomUsers(message: message, from: allUsers)
+                let filtered = allUsers.filter { $0.nickName != LocalData.loginNickname }
+                let shuffled = filtered.shuffled()
+                let selected = Array(shuffled.prefix(min(5, shuffled.count)))
+                let nicknames = selected.map { $0.nickName }
+
+                let result = try await FirebaseService.shared.sendLetter(sender: LocalData.loginNickname, recievers: nicknames, content: message, isAnonymous: true)
+                switch result {
+                case .success:
+                    didSendMessage = true
+                case .failure(let error):
+                    print("전송 실패: \(error.description)")
+                }
+
             } else if let user = selectedUser {
-                try await MessageService.save(message: message, to: user)
+                let result = try await FirebaseService.shared.sendLetter(sender: LocalData.loginNickname, recievers: [user.nickName], content: message, isAnonymous: false)
+                switch result {
+                case .success:
+                    didSendMessage = true
+                case .failure(let error):
+                    print("전송 실패: \(error.description)")
+                }
             }
-            didSendMessage = true
         } catch {
-            print("💥 전송 중 오류: \(error)")
+            print("💥 전송 중 오류: \(error.localizedDescription)")
+        }
+    }
+
+    func fetchAllUsers() {
+        Task {
+            let result = await FirebaseService.shared.getAllUsers()
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let users):
+                    self.allUsers = users
+                case .failure(let error):
+                    print("유저 불러오기 실패: \(error.description)")
+                }
+            }
         }
     }
 
@@ -69,7 +96,7 @@ class WriteMessageViewModel: ObservableObject {
     }
 
     static func generateAnonymousNickname() -> String {
-      
         return anonymousNicknames.randomElement() ?? "익명의 친구"
     }
 }
+

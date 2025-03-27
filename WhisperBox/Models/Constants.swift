@@ -21,12 +21,3 @@ let templates: [Template] = [
     Template(label: "이상형", contents: "이상형에 대해 이야기해봐요.\nex) 저는 INFP만 수집하는 취향이에요.")
 ]
 
-let users: [User] = [
-    User(nickname: "Wade", name: "김현기", code: 4758),
-    User(nickname: "Yeony", name: "남도연", code: 4758),
-    User(nickname: "Gigi", name: "박지원", code: 4758),
-    User(nickname: "Murphy", name: "유정민", code: 4758),
-    User(nickname: "Daisy", name: nil, code: 4758),
-    User(nickname: "Theo", name: "김성민", code: 4758),
-    // 필요하면 더 추가 가능!
-]
