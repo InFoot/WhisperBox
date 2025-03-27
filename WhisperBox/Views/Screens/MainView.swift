@@ -35,7 +35,7 @@ struct MainView: View {
     
     var sendLetter: some View {
         Button(action: {
-            coordinator.push(.writeMessage)
+            coordinator.push(.writeMessage(nil))
         }) {
             ZStack(alignment: .topTrailing) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -107,7 +107,7 @@ struct MainView: View {
                 .padding(.bottom, 10)
                 .onTapGesture {
                     if self.viewModel.todaySendCount < 2 {
-                        self.coordinator.push(.lockedLetter)
+                        coordinator.push(.lockedLetter)
                     }
                 }
             }

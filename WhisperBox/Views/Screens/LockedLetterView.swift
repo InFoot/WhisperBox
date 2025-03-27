@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LockedLetterView: View {
+    @EnvironmentObject var coordinator: Coordinator
     @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
@@ -26,7 +27,7 @@ struct LockedLetterView: View {
     var topBar: some View {
         HStack(spacing: 0) {
             Button(action: {
-                dismiss()
+                coordinator.pop()
             }) {
                 Image(systemName: "xmark").resizable().frame(width: 20, height: 20).foregroundStyle(.white)
             }
@@ -49,7 +50,11 @@ struct LockedLetterView: View {
     
     var bottomButton: some View {
         Button(action: {
-            
+            coordinator.pop()
+            Task {
+                try await Task.sleep(nanoseconds: 500_000_000)
+                coordinator.push(.searchReceiver)
+            }
         }) {
             Capsule().fill(.white)
                 .overlay(

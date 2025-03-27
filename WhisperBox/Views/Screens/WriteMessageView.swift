@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct WriteMessageView: View {
-    @StateObject private var viewModel = WriteMessageViewModel()
+    @ObservedObject private var viewModel: WriteMessageViewModel
+    @EnvironmentObject var coordinator: Coordinator
     @State private var isSelectingUser = false
     
+    init(_ user: User? = nil) {
+        self.viewModel = WriteMessageViewModel(user: user)
+    }
     @ViewBuilder
     private var userSelectorSheet: some View {
         
         UserListView { selected in
             viewModel.selectedUser = selected
+            self.isSelectingUser = false
         }
     }
     
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 16) {
             
             // 1. 제목
@@ -144,7 +148,7 @@ struct WriteMessageView: View {
             .padding(.horizontal, 20)
             
             NavigationLink(
-                destination: CompletedSentView(nickname: viewModel.selectedUser?.nickname),
+                destination: CompletedSentView(nickname: viewModel.selectedUser?.nickname).environmentObject(coordinator),
                 isActive: $viewModel.didSendMessage,
                 label: { EmptyView() }
             )
