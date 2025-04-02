@@ -57,13 +57,13 @@ class FirebaseService {
     }
     
     // MARK: 편지 정보 저장
-    func sendLetter(sender: String, recievers: [String], content: String, isAnonymous: Bool) async throws -> Result<Bool, WhisperBoxError> {
+    func sendLetter(sender: String, recievers: [String?], content: String, isAnonymous: Bool) async throws -> Result<Bool, WhisperBoxError> {
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
         let keyDateString = "\(dateComponents.year!)_\(dateComponents.month!)_\(dateComponents.day!)"
         let valueDateString = "\(dateComponents.year!).\(dateComponents.month!).\(dateComponents.day!) \(dateComponents.hour!):\(dateComponents.minute!)"
         do {
             for reciever in recievers {
-                try await database.child("letters").child(reciever).child(keyDateString).child(UUID().uuidString).setValue(["content": content, "sender": sender, "isAnonymous": isAnonymous, "letterDate": valueDateString])
+                try await database.child("letters").child(reciever!).child(keyDateString).child(UUID().uuidString).setValue(["content": content, "sender": sender, "isAnonymous": isAnonymous, "letterDate": valueDateString])
             }
             return .success(true)
         } catch {
@@ -78,7 +78,7 @@ class FirebaseService {
         // MARK: date에 해당하는 날짜에 유저에게 도착한 편지 리스트
         var letterList: [LetterInfo] = []
         
-        let dataSnapshot = await database.child("letters").child("ted").child(keyDateString).observeSingleEventAndPreviousSiblingKey(of: .value).0
+        let dataSnapshot = await database.child("letters").child(LocalData.userNickname).child(keyDateString).observeSingleEventAndPreviousSiblingKey(of: .value).0
         for child in dataSnapshot.children {
             if let childSnapshot = child as? DataSnapshot, let childValue = childSnapshot.value as? [String: Any] {
                 var letter = LetterInfo()

@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 final class Coordinator: ObservableObject {
-    @Published var route: [ViewType] = [.main]
+    @Published var route: [ViewType] = []
     
     init() {
         if LocalData.userNickname != "" {

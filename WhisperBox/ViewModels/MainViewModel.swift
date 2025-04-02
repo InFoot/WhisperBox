@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 class MainViewModel: ObservableObject {
-    @Published var todayLetterList: [LetterInfo] = [LetterInfo(sender: "hi", letterDate: "2025.03.26 10:00:00", isAnonymous: true, content: "안녕 나는 나는 안녕 안녕 안녕 나는 나는 안녕 안녕안녕 나는 나는 안녕 안녕안녕 나는 나는 안녕 안녕")]
+    @Published var todayLetterList: [LetterInfo] = [LetterInfo(sender: "Go", letterDate: "2025.03.26", isAnonymous: true, content: "모두 체킹 하세요~!!!!!!")]
     @Published var todaySendCount: Int = LocalData.sendCount
     
     func viewAppeared() {
@@ -22,9 +22,10 @@ class MainViewModel: ObservableObject {
             let result = await FirebaseService.shared.getUserLetters(userNickname: LocalData.userNickname, date: Date())
             switch result {
             case .success(let success):
+                
                 DispatchQueue.main.async {
                     withAnimation {
-                       // self.todayLetterList = success
+                       self.todayLetterList = success
                     }
                 }
                 

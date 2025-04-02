@@ -53,9 +53,17 @@ class WriteMessageViewModel: ObservableObject {
 
         do {
             if isAnonymous {
-                try await MessageService.saveToRandomUsers(message: message, from: allUsers)
+//                try await MessageService.saveToRandomUsers(message: message, from: allUsers)
+                // try await FirebaseService.shared.sendLetter(sender: LocalData.userNickname, recievers: [], content: "", isAnonymous: <#T##Bool#>)
             } else if let user = selectedUser {
-                try await MessageService.save(message: message, to: user)
+//                try await MessageService.save(message: message, to: user)
+                let result = try await FirebaseService.shared.sendLetter(sender: LocalData.userNickname, recievers: [selectedUser?.nickname], content: self.message, isAnonymous: false)
+                switch result {
+                case .success(let success):
+                    print(success)
+                case .failure(let failure):
+                    print(failure)
+                }
             }
             didSendMessage = true
         } catch {
